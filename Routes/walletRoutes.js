@@ -44,29 +44,76 @@ router.post('/setup', async (req, res) => {
 });
 
 
-// API: Credit / Debit amount
+//API: Credit / Debit amount
+// router.post('/transact/:walletId', async (req, res) => {
+//   try {
+//     const walletId = req.params.walletId;
+//     const { amount, description } = req.body;
+
+//     const wallet = await Wallet.findById(walletId);
+//     if (!wallet) {
+//       return res.status(404).json({ error: 'Wallet not found' });
+//     }
+
+//     const newBalance = wallet.balance + amount;
+//     if (newBalance < 0) {
+//       return res.status(400).json({ error: 'Insufficient balance' });
+//     }
+
+//     const transaction = new Transaction({
+//       walletId: wallet._id,
+//       amount,
+//       balance: newBalance,
+//       description,
+//       date: new Date(),
+//       type: amount > 0 ? 'CREDIT' : 'DEBIT',
+//     });
+//     await transaction.save();
+
+//     wallet.balance = newBalance;
+//     await wallet.save();
+
+//     res.status(200).json({ balance: newBalance, transactionId: transaction._id });
+//   } catch (error) {
+//     res.status(500).json({ error: 'An error occurred' });
+//   }
+// });
+
+
+
 router.post('/transact/:walletId', async (req, res) => {
   try {
     const walletId = req.params.walletId;
     const { amount, description } = req.body;
+
+  
+    const parsedAmount = parseFloat(amount);
+
+    
+    if (isNaN(parsedAmount)) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+
+  
+    const roundedAmount = parseFloat(parsedAmount.toFixed(4));
 
     const wallet = await Wallet.findById(walletId);
     if (!wallet) {
       return res.status(404).json({ error: 'Wallet not found' });
     }
 
-    const newBalance = wallet.balance + amount;
+    const newBalance = wallet.balance + roundedAmount;
     if (newBalance < 0) {
       return res.status(400).json({ error: 'Insufficient balance' });
     }
 
     const transaction = new Transaction({
       walletId: wallet._id,
-      amount,
+      amount: roundedAmount,
       balance: newBalance,
       description,
       date: new Date(),
-      type: amount > 0 ? 'CREDIT' : 'DEBIT',
+      type: roundedAmount > 0 ? 'CREDIT' : 'DEBIT',
     });
     await transaction.save();
 
@@ -78,6 +125,12 @@ router.post('/transact/:walletId', async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 });
+
+
+
+
+
+
 
 // API: Fetch transactions
 router.get('/transactions', async (req, res) => {
