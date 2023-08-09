@@ -2,8 +2,6 @@ const express = require('express');
 const app = express();
 const {connection} =require("./config/db");
 const cors=require("cors");
-
-// Import route handlers
 const walletRoutes = require('./Routes/walletRoutes');
 
 
@@ -22,10 +20,9 @@ app.use(
 
 app.use(express.json());
 
-// Use route handlers
 app.use('/', walletRoutes);
 
-//Define routes
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
