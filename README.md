@@ -4,7 +4,7 @@
  # this is a post request
 
 
-# 2:https://transection.onrender.com/transct/:walletId
+# 2:https://transection.onrender.com/transact/:walletId
   # this is a post request
  
 # 3: https://transection.onrender.com/transactions?walletId={walletId}&skip={skip}&limit={limit}
