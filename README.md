@@ -13,5 +13,5 @@
 
 # 4:https://transection.onrender.com/wallet/:id
 
-  # this is post request
+  # this is get request
  
